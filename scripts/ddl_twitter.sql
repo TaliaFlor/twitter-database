@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS users,
 -- Table USERS
 -- ---------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS users(
+CREATE TABLE IF NOT EXISTS users (
 	user_id SERIAL PRIMARY KEY,
 	email VARCHAR(50) NOT NULL UNIQUE,
 	pass varchar(50) NOT NULL,
