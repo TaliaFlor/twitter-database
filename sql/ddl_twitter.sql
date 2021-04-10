@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
 	email VARCHAR(50) NOT NULL UNIQUE,
 	pass varchar(50) NOT NULL,
 	username varchar(50) NOT NULL UNIQUE,
-	display_name varchar(50) NOT NULL,
+	display_name TINYBLOB NOT NULL,
 	joined_on DATE DEFAULT (CURRENT_DATE)
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS tweets (
 	tweet_id SERIAL PRIMARY KEY,
 	user_id BIGINT UNSIGNED NOT NULL,
-	content VARCHAR(280) NOT NULL,
+	content BLOB NOT NULL,
 	posted_on DATETIME DEFAULT CURRENT_TIMESTAMP,
 	edited_on DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
 	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS followers (
 );
 
 -- ---------------------------------------------------------------------------
--- 
+-- TODO Hashtags
 -- ---------------------------------------------------------------------------
 
 
