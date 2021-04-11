@@ -1,0 +1,7 @@
+# Basic
+pip
+setuptools
+
+# Dependencies
+twitter
+Faker

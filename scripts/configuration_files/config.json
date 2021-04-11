@@ -1,0 +1,37 @@
+{
+  "twitter_configuration": [   //TODO
+    {
+      "api_key": "?",
+      "api_secret": "?",
+      "access_token": "?",
+      "access_token_secret": "?"
+    }
+  ],
+  "database_configuration": {   //TODO
+    "username": "organdonation",
+    "password": "organdonation",
+    "host": "localhost",
+    "port": 27018,
+    "database": "sensor_organ_donation",
+    "collection_configuration": {
+      "tweets_collection": "tweets",
+      "users_collection": "users",
+      "retweets_collection": "retweets"
+    }
+  },
+  "application_configuration": {   //TODO
+    "application_name": "twitter",
+    "track_words": "intestine donor, intestino transplante, hígado donante, pancreas transplant, corazón donante, hígado donación, corazón donación, intestino donación, intestine donation, organ transplant, organ donation, organo donación, riñón donación, organo donar, hígado transplante, liver donation, lung donation, lung transplant, kidney donor, liver donor, intestino donante, organ donate, heart donor, pulmón donante, pancreas donate, lung donor, pancreas donor, riñón donante, intestine transplant, intestine donate, kidney transplant, organ donor, riñón donar, pulmón donación, organo transplante, pancreas transplante, lung donate, heart donate, heart donation, intestino donar, pulmón transplante, corazón donar, heart transplant, pancreas donation, pancreas donante, pancreas donar, hígado donar, kidney donate, riñón transplante, pancreas donación, liver transplant, organo donante, corazón transplante, pulmón donar, liver donate, kidney donation"
+  },
+  "logger_configuration": {   //TODO
+    "format": "%(asctime)-15s %(message)s"
+  },
+  "smtp_handler_configuration": {   //TODO
+    "mailhost": "smtp.gmail.com:587",
+    "fromaddr": "email@gmail.com",
+    "toaddrs": "email@gmail.com",
+    "subject": "LOGGER",
+    "user": "email",
+    "pwd": ""
+  }
+}
