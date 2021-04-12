@@ -11,8 +11,9 @@ from src.models.mention import Mention
 from src.models.retweet import Retweet
 from src.models.tweet import Tweet
 from src.models.user import User
-from src.util.file import read_file
-from src.util.number import randmedium
+from src.util.clazz import get_attributes
+from src.util.file import read_file, write_file
+from src.util.number import randmedium, fmt_date, fmt_datetime
 
 
 class Parser:
@@ -51,52 +52,57 @@ class Parser:
         json = post["user"]
         return User(
             user_id=json["id"],
-            email=self.fake.free_email(),
+            email=self.fake.email(),
             password=self.fake.password(),
             username=json["screen_name"],
             display_name=json["name"],
             location=json["location"],
             description=json["description"],
-            verified=json["verified"],
-            joined_on=json["created_at"]
+            verified=1 if json["verified"] else 0,
+            joined_on=fmt_date(json["created_at"])
         )
 
     def __parse_retweet(self, post) -> Retweet:
         retweet = Retweet(
             tweet_id=post["retweeted_status"]["id"],
             user_id=post["user"]["id"],
-            retweeted_on=post["created_at"]
+            retweeted_on=fmt_datetime(post["created_at"])
         )
 
-        if not self.collection.exists(retweet.tweet_id):
+        if not self.collection.exists(Tweet, retweet.tweet_id):
             self.__parse_post(post["retweeted_status"])
 
         user_id = post["retweeted_status"]["user"]["id"]
-        if not self.collection.exists(user_id):
+        if not self.collection.exists(User, user_id):
             self.collection.insert_user(self.__parse_user(post["retweeted_status"]))
 
         return retweet
 
     def __parse_post(self, post):
         """Parsers a post. Can be a tweet, a quote or a reply"""
+        if post["is_quote_status"] == True and not self.collection.exists(Tweet, post["quoted_status"]["id"]):
+            self.__parse_post(post["quoted_status"])
+
         self.collection.insert_tweet(self.__parse_tweet(post))
         self.collection.insert_hashtags(self.__parse_hashtags(post))
         self.collection.insert_mentions(self.__parse_mentions(post))
 
-        if post["is_quote_status"] == True and not self.collection.exists(post["quoted_status"]["id"]):
-            self.__parse_post(post["quoted_status"])
+        return  # Usado para inserir caso otweet tenha sido um quote tweet e o original não existir ainda
 
-    @staticmethod
-    def __parse_tweet(post) -> Tweet:
-        quote_id = post["quoted_status_id"] if post["is_quote_status"] == True else None
-        return Tweet(
+    def __parse_tweet(self, post) -> Tweet:
+        conversation_id = post["quoted_status_id"] if post["is_quote_status"] == True else post["in_reply_to_status_id"]
+        tweet = Tweet(
             tweet_id=post["id"],
             user_id=post["user"]["id"],
-            reply_id=post["in_reply_to_status_id"],
-            quote_id=quote_id,
+            conversation_id=conversation_id,
             content=post["text"],
-            posted_on=post["created_at"]
+            posted_on=fmt_datetime(post["created_at"])
         )
+
+        if not self.collection.exists(User, tweet.user_id):
+            self.collection.insert_user(self.__parse_user(post))
+
+        return tweet
 
     @staticmethod
     def __parse_hashtags(post) -> List[Hashtag]:
@@ -123,7 +129,7 @@ class Parser:
             )
             mentions.append(mention)
 
-            if not self.collection.exists(mention.user_id):
+            if not self.collection.exists(User, mention.user_id):
                 self.collection.insert_user(self.__parse_user_from_mentions(item))
 
         return mentions
@@ -131,7 +137,7 @@ class Parser:
     def __parse_user_from_mentions(self, user_mention) -> User:
         return User(
             user_id=user_mention["id"],
-            email=self.fake.free_email(),
+            email=self.fake.email(),
             password=self.fake.password(),
             username=user_mention["screen_name"],
             display_name=user_mention["name"]
@@ -155,8 +161,8 @@ class Parser:
         followers = []
         for user_follower in users:
             follower = Follower(
-                following_id=user_follower.user_id,
-                user_id=user.user_id
+                following_id=user.user_id,
+                user_id=user_follower.user_id
             )
             followers.append(follower)
 
@@ -193,6 +199,25 @@ if __name__ == "__main__":
 
     parser = Parser(data)
     collection = parser.parse()
+
+    collection.export_data("../../../sql/data/")
+
+    # headers = get_attributes(User)
+    # write_file("../../../sql/data/01-load_users.csv", collection.users, header=headers)
+    # headers = get_attributes(Follower)
+    # write_file("../../../sql/data/02-load_followers.csv", collection.followers, header=headers)
+    # headers = get_attributes(Tweet)
+    # write_file("../../../sql/data/03-load_tweets.csv", collection.tweets, header=headers)
+    # headers = get_attributes(Hashtag)
+    # write_file("../../../sql/data/04-load_hashtags.csv", collection.hashtags, header=headers)
+    # headers = get_attributes(Mention)
+    # write_file("../../../sql/data/05-load_mentions.csv", collection.mentions, header=headers)
+    # headers = get_attributes(Retweet)
+    # write_file("../../../sql/data/06-load_retweets.csv", collection.retweets, header=headers)
+    # headers = get_attributes(Like)
+    # write_file("../../../sql/data/07-load_likes.csv", collection.likes, header=headers)
+
+    # for user in collection.users:
 
     # print(collection.users)
     # print(collection.retweets)

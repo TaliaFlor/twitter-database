@@ -7,6 +7,8 @@ from src.models.mention import Mention
 from src.models.retweet import Retweet
 from src.models.tweet import Tweet
 from src.models.user import User
+from src.util.clazz import get_attributes
+from src.util.file import write_file
 
 
 class Collection:
@@ -53,15 +55,40 @@ class Collection:
 
     # --- SEARCH
 
-    def exists(self, key: int) -> bool:
+    def exists(self, clazz, key: int) -> bool:
         """Diz se um objeto existe numa coleção de acordo com seu tipo e ID"""
-        return self.find_by_id(key) is not None
+        return self.find_by_id(clazz, key) is not None
 
-    def find_by_id(self, key: int) -> object:
+    def find_by_id(self, clazz, key: int) -> object:
         """Retorna um objeto de uma coleção se ele existir de acordo com seu tipo e ID"""
-        if isinstance(key, User):
+        if isinstance(clazz, User):
             return next((user for user in self.users if user.user_id == key), None)
-        elif isinstance(key, Tweet):
+        elif isinstance(clazz, Tweet):
             return next((tweet for tweet in self.tweets if tweet.tweet_id == key), None)
         else:
             return None
+
+    # --- EXPORT
+
+    def __get_export_tuples(self):
+        """Returns a list with tuples of the data stored in this class to be used in the export"""
+        return [
+            (User, "users", self.users),
+            (Follower, "followers", self.followers),
+            (Tweet, "tweets", self.tweets),
+            (Hashtag, "hashtags", self.hashtags),
+            (Mention, "mentions", self.mentions),
+            (Retweet, "retweets", self.retweets),
+            (Like, "likes", self.likes)
+        ]
+
+    def export_data(self, path):
+        print('Export started')
+        for index, data_tuple in enumerate(self.__get_export_tuples(), start=1):
+            headers = get_attributes(data_tuple[0])
+            write_file(
+                f"{path}{index}-load_{data_tuple[1]}.csv",  # "{path}1-load_users.csv"
+                data_tuple[2],
+                header=headers
+            )
+        print('Export finalized')
