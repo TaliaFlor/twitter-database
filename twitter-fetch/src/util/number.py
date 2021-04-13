@@ -4,18 +4,14 @@ from datetime import datetime
 
 # ======== DATE =======
 
-def fmt_date(_date: str):
+def fmt_date(_date):
     """Normalizes a date to a format the database recognizes"""
-    return __get_datetime_obj(_date).strftime('%Y-%m-%d')
+    return _date.strftime('%Y-%m-%d')
 
 
-def fmt_datetime(_datetime: str):
+def fmt_datetime(_datetime):
     """Normalizes a date to a format the database recognizes"""
-    return __get_datetime_obj(_datetime).strftime('%Y-%m-%d %H:%M:%S')
-
-
-def __get_datetime_obj(str_date: str):
-    return datetime.strptime(str_date, '%a %b %d %H:%M:%S %z %Y')
+    return _datetime.strftime('%Y-%m-%d %H:%M:%S')
 
 
 # ======== RANDOM =======

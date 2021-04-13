@@ -31,7 +31,7 @@ class Exporter:
 
     def export(self):
         """Exports the data to CSVs files"""
-        print('Export started')
+        print('--- Exporting data')
         for index, data_tuple in enumerate(self.__get_export_tuples(), start=1):
             headers = get_attributes(data_tuple[0])
             write_file(
@@ -39,4 +39,3 @@ class Exporter:
                 data_tuple[2],
                 header=headers
             )
-        print('Export finalized')
