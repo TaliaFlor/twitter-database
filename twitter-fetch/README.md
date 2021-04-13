@@ -18,5 +18,5 @@ Um modelo de retorno da API pode ser encontrado em `twitter-fetch/resources/exam
 
 - [Twitter API](https://developer.twitter.com/en/docs/twitter-api)
   <br/><br/>
-- [tweepy](https://pypi.org/project/tweepy/)
-- [Faker](https://pypi.org/project/Faker/)
+- [tweepy](https://docs.tweepy.org/en/latest/)
+- [Faker](https://faker.readthedocs.io/en/master/index.html)
