@@ -21,7 +21,7 @@ class Fetcher:
         )
         return Twitter(auth=oauth)
 
-    def fetch(self):
+    def fetch(self) -> list:
         print('Fetch started')
         query = self.config["application"]["query"]
 

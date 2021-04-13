@@ -7,8 +7,6 @@ from src.models.mention import Mention
 from src.models.retweet import Retweet
 from src.models.tweet import Tweet
 from src.models.user import User
-from src.util.clazz import get_attributes
-from src.util.file import write_file
 
 
 class Collection:
@@ -67,28 +65,3 @@ class Collection:
             return next((tweet for tweet in self.tweets if tweet.tweet_id == key), None)
         else:
             return None
-
-    # --- EXPORT
-
-    def __get_export_tuples(self):
-        """Returns a list with tuples of the data stored in this class to be used in the export"""
-        return [
-            (User, "users", self.users),
-            (Follower, "followers", self.followers),
-            (Tweet, "tweets", self.tweets),
-            (Hashtag, "hashtags", self.hashtags),
-            (Mention, "mentions", self.mentions),
-            (Retweet, "retweets", self.retweets),
-            (Like, "likes", self.likes)
-        ]
-
-    def export_data(self, path):
-        print('Export started')
-        for index, data_tuple in enumerate(self.__get_export_tuples(), start=1):
-            headers = get_attributes(data_tuple[0])
-            write_file(
-                f"{path}{index}-load_{data_tuple[1]}.csv",  # "{path}1-load_users.csv"
-                data_tuple[2],
-                header=headers
-            )
-        print('Export finalized')

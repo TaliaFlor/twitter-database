@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import date
 
-from src.util.number import fmt_date
-
 
 @dataclass(frozen=True, order=True)
 class User:

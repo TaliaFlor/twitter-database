@@ -1,9 +1,9 @@
 import random
 from typing import List
 
+from collection import Collection
 from faker import Faker
 
-from collection import Collection
 from src.models.follower import Follower
 from src.models.hashtag import Hashtag
 from src.models.like import Like
@@ -11,7 +11,6 @@ from src.models.mention import Mention
 from src.models.retweet import Retweet
 from src.models.tweet import Tweet
 from src.models.user import User
-from src.util.file import read_file
 from src.util.number import randmedium, fmt_date, fmt_datetime
 
 
@@ -194,36 +193,11 @@ class Parser:
         print('Parse finalized')
         return self.collection
 
-
-if __name__ == "__main__":
-    data = read_file("../../resources/examples/sample_response.json")
-
-    parser = Parser(data)
-    collection = parser.parse()
-
-    collection.export_data("../../../sql/data/")
-
-    # headers = get_attributes(User)
-    # write_file("../../../sql/data/01-load_users.csv", collection.users, header=headers)
-    # headers = get_attributes(Follower)
-    # write_file("../../../sql/data/02-load_followers.csv", collection.followers, header=headers)
-    # headers = get_attributes(Tweet)
-    # write_file("../../../sql/data/03-load_tweets.csv", collection.tweets, header=headers)
-    # headers = get_attributes(Hashtag)
-    # write_file("../../../sql/data/04-load_hashtags.csv", collection.hashtags, header=headers)
-    # headers = get_attributes(Mention)
-    # write_file("../../../sql/data/05-load_mentions.csv", collection.mentions, header=headers)
-    # headers = get_attributes(Retweet)
-    # write_file("../../../sql/data/06-load_retweets.csv", collection.retweets, header=headers)
-    # headers = get_attributes(Like)
-    # write_file("../../../sql/data/07-load_likes.csv", collection.likes, header=headers)
-
-    # for user in collection.users:
-
-    # print(collection.users)
-    # print(collection.retweets)
-    # print(collection.tweets)
-    # print(collection.hashtags)
-    # print(collection.mentions)
-    # print(collection.followers)
-    # print(collection.likes)
+# if __name__ == "__main__":
+#     data = read_file("../../resources/examples/sample_response.json")
+#
+#     parser = Parser(data)
+#     collection = parser.parse()
+#
+#     exporter = Exporter("../../../sql/data/", collection)
+#     exporter.export()

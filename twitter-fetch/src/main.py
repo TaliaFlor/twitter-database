@@ -1,33 +1,23 @@
-from twitter import Twitter
+from exporter import Exporter
+from fetcher import Fetcher
+from parser import Parser
 
-from modules.auth import get_oauth
+config_file = "../resources/config.json"
 
-credentials_filename = "../resources/credentials.json"
-oauth = get_oauth(credentials_filename)
+data_folder = "../../sql/data/"
 
-twitter = Twitter(auth=oauth)
+try:
+    print('App initialized')
 
-# &next_results
-next_token = ""
-while True:
-    try:
-        data = twitter.search.tweets(q="books" + next_token)
-        next_token = data["search_metadata"]["next_results"]
-        print(data)
-    except:
-        break
-# print()
-# print(twitter.search.tweets(q="books&count=100")["search_metadata"])
+    fetcher = Fetcher(config_file)
+    posts = fetcher.fetch()
 
-# queries_filename = "resources/query.json"
-# queries = get_queries(queries_filename)
+    parser = Parser(posts)
+    collection = parser.parse()
 
-# data = []
-# for query in queries:
-#     data.append(twitter.search.tweets(q=query))
+    exporter = Exporter(data_folder, collection)
+    exporter.export()
 
-# print(len(data))
-# print(data)
-
-# parser = Parser()
-# parser.parse(data)
+    print('App finalized')
+except Exception as exp:
+    print(exp)
