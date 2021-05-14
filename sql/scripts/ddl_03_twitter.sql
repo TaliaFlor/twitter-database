@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS followers (
 	following_id BIGINT UNSIGNED NOT NULL,
 	user_id BIGINT UNSIGNED NOT NULL,
 	FOREIGN KEY (following_id) REFERENCES users(user_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+	UNIQUE KEY (following_id, user_id)
 );
 
 -- ---------------------------------------------------------------------------
@@ -96,7 +97,8 @@ CREATE TABLE IF NOT EXISTS retweets (
 	user_id BIGINT UNSIGNED NOT NULL,
 	retweeted_on DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (tweet_id) REFERENCES tweets(tweet_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+	UNIQUE KEY (tweet_id, user_id)
 );
 
 -- ---------------------------------------------------------------------------
@@ -109,7 +111,8 @@ CREATE TABLE IF NOT EXISTS likes (
 	user_id BIGINT UNSIGNED NOT NULL,
 	liked_on DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (tweet_id) REFERENCES tweets(tweet_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+	UNIQUE KEY (tweet_id, user_id)
 );
 
 -- ---------------------------------------------------------------------------
